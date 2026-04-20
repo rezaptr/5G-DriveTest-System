@@ -1,0 +1,140 @@
+{% extends "base_app.html" %}
+
+{% block title %}Evaluasi Kualitas Layanan Sepanjang Rute{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/evaluation.css') }}">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block content %}
+
+<!-- MAIN HEADER -->
+<header class="main-header">
+  <h1>EVALUASI KUALITAS LAYANAN SEPANJANG RUTE</h1>
+</header>
+
+<!-- TOOLBAR -->
+<section class="evaluation-toolbar">
+
+  <!-- Upload -->
+  <button id="uploadSimResultBtn" class="toolbar-btn">
+    <i class="fas fa-file-upload"></i> Import Hasil Simulasi
+  </button>
+
+  <!-- ✅ Input koordinat Site — titik acuan spider -->
+  <div class="site-input-group">
+    <label><i class="fas fa-broadcast-tower"></i> Koordinat Site:</label>
+    <div class="site-coords">
+      <input type="number" id="siteLat" placeholder="Latitude" step="0.000001"
+             class="coord-input" title="Latitude site (titik acuan)">
+      <input type="number" id="siteLng" placeholder="Longitude" step="0.000001"
+             class="coord-input" title="Longitude site (titik acuan)">
+    </div>
+    <span class="site-hint">Titik acuan jarak pengukuran</span>
+  </div>
+
+  <!-- Parameter selector -->
+  <div class="parameter-selector">
+    <label>Tampilan Peta:</label>
+    <select id="parameterSelect">
+      <option value="rsrp">RSRP</option>
+      <option value="sinr">SINR</option>
+    </select>
+  </div>
+
+  <!-- Evaluate -->
+  <button id="evaluateBtn" class="toolbar-btn btn-evaluate" disabled>
+    <i class="fas fa-chart-bar"></i> Evaluasi
+  </button>
+
+  <!-- Status -->
+  <div class="upload-status">
+    <span id="simStatus" class="status-badge">Sim: -</span>
+  </div>
+
+</section>
+
+<!-- MAIN CONTENT AREA -->
+<div class="evaluation-container">
+
+  <!-- TOP SECTION — MAP + SEGMENT TABLE -->
+  <div class="top-section">
+
+    <!-- LEFT — MAP -->
+    <div class="map-section">
+      <div class="map-header">
+        <h3><i class="fas fa-map-marked-alt"></i> Visualisasi Spider Coverage dari Site</h3>
+      </div>
+      <div id="evaluationMap"></div>
+      <div id="mapLegend" class="map-legend" style="display:none;">
+        <h4 id="legendTitle">RSRP (dBm)</h4>
+        <table>
+          <thead><tr><th></th><th>Rentang</th><th>%</th></tr></thead>
+          <tbody id="legendTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- RIGHT — SEGMENT TABLE -->
+    <div class="segment-section">
+      <h3><i class="fas fa-table"></i> Distribusi Kualitas per Segmen Jarak (TA)</h3>
+      <div class="segment-table-container">
+        <table class="segment-table">
+          <thead>
+            <tr>
+              <th>TA</th>
+              <th>Segmen</th>
+              <th>Dominan RSRP</th>
+              <th>Dominan SINR</th>
+            </tr>
+          </thead>
+          <tbody id="segmentTableBody">
+            <tr><td colspan="4" class="no-data">Import hasil simulasi untuk melihat data</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM SECTION — CDF CHART + CONCLUSION -->
+  <div class="bottom-section">
+
+    <!-- CDF CHART -->
+    <div class="chart-section">
+      <div class="chart-header">
+        <h3><i class="fas fa-chart-area"></i> Distribusi Kumulatif (CCDF) — RSRP &amp; SINR</h3>
+        <span class="chart-subtitle">Sumbu Y: % titik yang memiliki nilai ≥ X · Sumbu bawah: RSRP (dBm) · Sumbu atas: SINR (dB)</span>
+      </div>
+      <div class="cdf-chart-wrap">
+        <canvas id="cdfChart"></canvas>
+      </div>
+      <div id="cdfSummary" class="cdf-summary"></div>
+    </div>
+
+    <!-- CONCLUSION -->
+    <div class="conclusion-section">
+      <h3><i class="fas fa-clipboard-check"></i> Kesimpulan</h3>
+      <div id="conclusionContent" class="conclusion-content">
+        <p class="waiting-text">Import hasil simulasi dan klik "Evaluasi" untuk melihat kesimpulan</p>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- FILE INPUT HIDDEN -->
+<input type="file" id="simResultInput" accept=".csv,.txt,.xlsx" style="display:none;">
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="{{ url_for('static', filename='js/evaluation.js') }}"></script>
+{% endblock %}

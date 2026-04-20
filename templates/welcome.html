@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome Page{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/welcome.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<header class="main-header">
+  <div class="header-left">
+    <h1>5G DRIVE TEST SYSTEM</h1>
+  </div>
+  <div class="nav-menu">
+    <a href="{{ url_for('help_page') }}" class="nav-btn">Help</a>
+    <a href="{{ url_for('about') }}" class="nav-btn">About</a>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card-welcome">
+    <div class="bg-blob-inner"></div>
+
+    <div class="card-left-welcome">
+      <img src="{{ url_for('static', filename='property/welcome.png') }}" alt="Ilustrasi Sistem 5G">
+    </div>
+
+    <div class="card-right-welcome">
+      <h1>
+        SISTEM SIMULASI <span class="text-blue">HASIL DRIVE TEST</span> DAN 
+        ANALISIS CAKUPAN <span class="text-blue">5G</span>
+      </h1>
+
+      <p>
+        Sistem simulasi ini digunakan sebagai gambaran awal kualitas jaringan serta analisis yang mengacu pada data
+        lapangan hasil drive test.
+      </p>
+
+      <div class="btn-group">
+        <a href="{{ url_for('login') }}" class="btn primary">LOGIN</a>
+        <a href="{{ url_for('signup') }}" class="btn secondary">SIGN UP</a>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+{% endblock %}

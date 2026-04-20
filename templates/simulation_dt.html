@@ -1,0 +1,152 @@
+{% extends "base_app.html" %}
+{% block title %}Simulasi DT Aktual{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dtsimulation.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<header class="main-header">
+  <h1>SIMULASI BERBASIS RUTE DRIVE TEST AKTUAL</h1>
+  <div class="header-badge">Hybrid Model v12</div>
+</header>
+
+<section class="simulation-toolbar">
+  <label class="btn-toolbar btn-upload-label" for="dtCsvInput">
+    📂 Upload CSV DT Aktual
+    <input type="file" id="dtCsvInput" accept=".csv,.txt,.gen" style="display:none;">
+  </label>
+  <div class="toolbar-divider"></div>
+  <button id="btnRunSimulation" class="btn-toolbar btn-run" disabled>▶ Jalankan Simulasi</button>
+  <div style="margin-left:auto;display:flex;gap:8px;">
+    <button id="btnDebugSite"  class="btn-toolbar btn-debug">🔍 Debug</button>
+    <button id="btnExportCSV"  class="btn-toolbar btn-export" disabled>💾 Export CSV</button>
+    <button id="btnBackToSim"  class="btn-toolbar btn-back">← Kembali</button>
+  </div>
+</section>
+
+<div class="simulation-container">
+
+  <div class="simulation-map-wrapper">
+    <div id="dtLegend" class="rsrp-legend" style="display:none;">
+      <h4>RSRP Simulasi (dBm)</h4>
+      <table>
+        <thead><tr><th></th><th>Rentang</th><th>%</th></tr></thead>
+        <tbody id="dtLegendBody"></tbody>
+      </table>
+    </div>
+    <div id="mapGuide" class="map-guide-overlay">
+      <div class="map-guide-inner">
+        <div class="map-guide-icon">🔬</div>
+        <h3>Hybrid Simulation Model</h3>
+        <p>
+          Menggabungkan <strong>formula 3GPP TR 38.901</strong> dengan
+          <strong>kalibrasi empiris</strong> dari data aktual.<br><br>
+          Jarak dihitung otomatis dari koordinat GPS — tidak perlu kolom distance di CSV.<br>
+          Bias koreksi = rata-rata selisih RSRP aktual vs 3GPP, difit per-site.
+        </p>
+        <div class="map-guide-steps">
+          <div class="step-pill"><span class="pill-num">1</span> Site dari sesi</div>
+          <div class="step-pill"><span class="pill-num">2</span> Upload CSV DT</div>
+          <div class="step-pill"><span class="pill-num">3</span> Auto-kalibrasi bias</div>
+          <div class="step-pill"><span class="pill-num">4</span> Simulasi &amp; Export</div>
+        </div>
+      </div>
+    </div>
+    <div id="map-dt-sim"></div>
+  </div>
+
+  <aside class="simulation-info">
+
+    <div class="info-box">
+      <h3>📡 DATA SITE</h3>
+      <p id="siteStatus" class="status-msg status-info">⏳ Memuat data site...</p>
+      <div class="mini-stat-row" style="margin-top:6px;">
+        <span class="mini-stat-label">Total site:</span>
+        <span class="mini-stat-value" id="infoTotalSites">—</span>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <h3>📂 CSV DRIVE TEST</h3>
+      <p id="csvStatus" class="status-msg status-info">Belum ada file diupload.</p>
+      <p id="csvColInfo" class="col-info-tag" style="display:none;"></p>
+      <table class="mini-info-table" style="margin-top:8px;">
+        <tr><td>Total titik GPS:</td>      <td><b id="infoRawPoints">—</b></td></tr>
+        <tr><td>Titik ber-RSRP (sim):</td> <td><b id="infoSimPoints">—</b></td></tr>
+        <tr><td>Titik LTE/idle (skip):</td><td><b id="infoNoRsrp">—</b></td></tr>
+        <tr><td>Filter GPS glitch:</td>    <td><b id="infoFiltered">—</b></td></tr>
+        <tr><td>Panjang rute:</td>         <td><b id="infoRouteDist">—</b></td></tr>
+        <tr><td>RSRP aktual:</td>          <td><b id="infoHasRSRP">—</b></td></tr>
+        <tr><td>SINR aktual:</td>          <td><b id="infoHasSINR">—</b></td></tr>
+      </table>
+      <div class="note-inline" style="margin-top:8px;">
+        💡 Kolom Distance tidak diperlukan — jarak dihitung otomatis dari lat/lng ke koordinat site.
+      </div>
+    </div>
+
+    <div class="info-box">
+      <h3>🎯 SITE TERDETEKSI</h3>
+      <p id="siteMatchStatus" class="status-msg status-info">Menunggu CSV...</p>
+      <table class="mini-info-table" style="margin-top:8px;">
+        <tr><td>Site ID:</td>         <td><b id="dispSiteId">—</b></td></tr>
+        <tr><td>Koordinat:</td>       <td><b id="dispSiteCoord">—</b></td></tr>
+        <tr><td>Tinggi Antena:</td>   <td><b id="dispSiteHeight">—</b></td></tr>
+        <tr><td>Sektor:</td>          <td><b id="dispSiteSectors">—</b></td></tr>
+        <tr><td>Model Propagasi:</td> <td><b id="dispSiteModel">—</b></td></tr>
+        <tr><td>Clutter:</td>         <td><b id="dispSiteClutter">—</b></td></tr>
+      </table>
+    </div>
+
+    <div class="info-box">
+      <h3>🔬 KALIBRASI EMPIRIS</h3>
+      <p id="modelStatus" class="status-msg status-info">Menunggu CSV + site...</p>
+      <table class="mini-info-table" style="margin-top:8px;">
+        <tr><td>Data kalibrasi:</td>    <td><b id="infoCalibN">—</b> titik</td></tr>
+        <tr><td>Bias koreksi:</td>      <td><b id="infoCalibBias">—</b></td></tr>
+        <tr><td>Residual σ:</td>        <td><b id="infoCalibStd">—</b></td></tr>
+        <tr><td>RMSE before→after:</td> <td><b id="infoCalibRmse">—</b></td></tr>
+        <tr><td>R² SINR model:</td>     <td><b id="infoSinrR2">—</b></td></tr>
+      </table>
+      <div class="note-inline" style="margin-top:8px;">
+        Metode: <code>RSRP_sim = RSRP_3GPP + bias + N(0,σ)</code><br>
+        <code>SINR_sim = a·RSRP_sim + b + N(0,σ_sinr)</code>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <h3>⚙️ PARAMETER</h3>
+      <table class="mini-info-table">
+        <tr><td>Frekuensi:</td>       <td><b>2300 MHz</b></td></tr>
+        <tr><td>Tx Power:</td>        <td><b>46 dBm</b></td></tr>
+        <tr><td>Mobile Height:</td>   <td><b>1.5 m</b></td></tr>
+        <tr><td>Path Loss:</td>       <td><b>3GPP TR 38.901</b></td></tr>
+        <tr><td>Bias:</td>            <td><b>Empiris dari data aktual</b></td></tr>
+        <tr><td>Distance:</td>        <td><b>Dihitung dari lat/lng</b></td></tr>
+        <tr><td>LTE/idle rows:</td>   <td><b>Dilewati otomatis</b></td></tr>
+      </table>
+    </div>
+
+    <div id="resultBox" class="info-box result-box" style="display:none;"></div>
+
+  </aside>
+</div>
+
+<div id="loadingOverlay" class="loading-overlay" style="display:none;">
+  <div><div class="spinner"></div><h2>Memproses...</h2><p>Mohon tunggu</p></div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="{{ url_for('static', filename='js/dtsimulation.js') }}"></script>
+<script>
+  document.getElementById('dtCsvInput')?.addEventListener('change',()=>{
+    const g=document.getElementById('mapGuide');if(g)g.style.display='none';
+  });
+</script>
+{% endblock %}

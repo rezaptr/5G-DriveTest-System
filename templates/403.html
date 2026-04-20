@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Akses Ditolak - Sistem Simulasi Drive Test 5G{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/helpabout.css') }}">
+<style>
+    /* Membuat halaman fit ke satu layar tanpa scroll */
+    body, html {
+        height: 100%;
+        margin: 0;
+        overflow: hidden; /* Mematikan scroll bar */
+    }
+
+    .full-screen-wrapper {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .error-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Vertikal center */
+        align-items: center;    /* Horizontal center */
+        padding: 20px;
+        text-align: center;
+    }
+
+    .error-card {
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        max-width: 500px;
+        width: 90%;
+    }
+
+    .error-code {
+        font-size: 80px;
+        font-weight: 800;
+        color: #ff4d4f;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .btn-back {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 12px 25px;
+        background: #1890ff;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .btn-back:hover {
+        background: #096dd9;
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="full-screen-wrapper">
+    <header class="main-header" style="margin-bottom: 0;">
+        <h1>SISTEM SIMULASI HASIL DRIVE TEST 5G</h1>
+    </header>
+
+    <main class="error-content">
+        <div class="error-card">
+            <span style="font-size: 60px;">🚫</span>
+            <h1 class="error-code">401</h1>
+            <h2 style="margin: 10px 0; color: #333;">Akses Terbatas</h2>
+            <p style="color: #666; line-height: 1.5;">
+                Maaf, Anda tidak memiliki izin untuk mengakses fitur ini. 
+                Silakan hubungi Admin untuk penyesuaian Role.
+            </p>
+            
+            <a href="{{ url_for('main') }}" class="btn-back">
+                Kembali ke Dashboard
+            </a>
+        </div>
+    </main>
+
+    <footer class="help-footer" style="padding: 15px 0;">
+        Sistem Simulasi Drive Test 5G &copy; 2026
+    </footer>
+</div>
+{% endblock %}

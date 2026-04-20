@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Login | Sistem Simulasi 5G{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+{% endblock %}
+
+{% block content %}
+
+<header class="main-header">
+  <div class="header-left">
+    <h1>5G DRIVE TEST SYSTEM</h1>
+  </div>
+  <div class="nav-menu">
+    <a href="{{ url_for('welcome') }}" class="nav-btn">Home</a>
+    <a href="{{ url_for('help_page') }}" class="nav-btn">Help</a>
+    <a href="{{ url_for('about') }}" class="nav-btn">About</a>
+  </div>
+</header>
+
+<div class="main-viewport">
+  <div class="card-auth">
+    <div class="card-left">
+      <img src="{{ url_for('static', filename='property/login.png') }}" alt="Login Illustration">
+    </div>
+
+    <div class="card-right">
+      <div class="form-header">
+        <h1>LOGIN</h1>
+        <p class="subtitle">Selamat datang kembali! Silahkan masuk.</p>
+      </div>
+
+      <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+        <div class="input-group">
+          <label class="input-label">EMAIL</label>
+          <input type="email" name="email" placeholder="Masukkan Email" class="login-input" required>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">PASSWORD</label>
+          <div class="input-eye">
+            <input type="password" name="password" placeholder="Masukkan password" class="login-input" required>
+            <i class="fas fa-eye toggle-password"></i>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-auth-submit">LOGIN</button>
+
+        <p class="auth-footer-text">
+          Belum mempunyai akun?
+          <a href="{{ url_for('signup') }}">Sign Up Here</a>
+        </p>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.toggle-password').forEach(icon => {
+      icon.addEventListener('click', function () {
+        const input = this.closest('.input-eye').querySelector('input');
+
+        if (input.type === "password") {
+          input.type = "text";
+          this.classList.remove("fa-eye");
+          this.classList.add("fa-eye-slash");
+        } else {
+          input.type = "password";
+          this.classList.remove("fa-eye-slash");
+          this.classList.add("fa-eye");
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,400 @@
+{% extends "base_app.html" %}
+
+{% block title %}Profil Saya | 5G Drive Test System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    /* Menggunakan variabel warna agar konsisten */
+    :root {
+        --primary-blue: #1890ff;
+        --dark-blue: #1F3C88;
+        --soft-blue: #3F72AF;
+    }
+
+    .nav-group {
+        display: flex;
+        gap: 12px;
+    }
+
+    .nav-btn {
+        text-decoration: none;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.12);
+        color: #fff;
+        padding: 8px 22px;
+        border-radius: 6px;
+        border: 1.5px solid rgba(255, 255, 255, 0.25);
+        transition: all 0.2s ease;
+        letter-spacing: 0.3px;
+    }
+
+    .nav-btn:hover {
+        background: rgba(255, 255, 255, 0.22);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-1px);
+    }
+
+    .profile-container {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 30px;
+        margin-top: 30px;
+    }
+
+    .profile-card,
+    .password-card {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .profile-info-center {
+        text-align: center;
+    }
+
+    /* Avatar Styling */
+    .avatar-large {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        margin-bottom: 15px;
+        border: 4px solid #fff;
+        object-fit: cover;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        background-color: #f0f2f5;
+    }
+
+    /* Custom File Upload UI */
+    .custom-file-upload {
+        display: inline-block;
+        position: relative;
+        margin-bottom: 15px;
+        width: 100%;
+    }
+
+    .file-input-hidden {
+        display: none;
+    }
+
+    .file-label-custom {
+        display: block;
+        padding: 10px;
+        background: #f8f9fa;
+        border: 2px dashed #d9d9d9;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 13px;
+        color: #666;
+    }
+
+    .file-label-custom:hover {
+        border-color: var(--primary-blue);
+        color: var(--primary-blue);
+    }
+
+    .user-meta h3 {
+        margin: 10px 0 5px;
+        font-size: 22px;
+        color: #333;
+    }
+
+    .role-badge {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 12px;
+        margin-top: 10px;
+        text-transform: uppercase;
+    }
+
+    .rf_engineer {
+        background: #e6f7ff;
+        color: #1890ff;
+    }
+
+    .dt_engineer {
+        background: #fff1f0;
+        color: #ff4d4f;
+    }
+
+    /* Form Styling */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #444;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    .btn-save {
+        background: var(--primary-blue);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+        transition: 0.3s;
+    }
+
+    .btn-save:hover {
+        background: #096dd9;
+    }
+
+    /* Container umum untuk pesan flash */
+    .alert {
+        padding: 15px;
+        margin: 10px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        text-align: center;
+        border: 1px solid transparent;
+    }
+
+    /* Warna Sukses (Hijau) */
+    .alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+    }
+
+    /* Warna Danger (Merah) */
+    .alert-danger {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+    }
+
+    /* Menghilangkan otomatis setelah beberapa detik (Opsional) */
+    .global-alert {
+        animation: fadeOut 5s forwards;
+    }
+
+    .input-eye {
+        position: relative;
+    }
+
+    .input-eye input {
+        width: 100%;
+        padding-right: 40px;
+    }
+
+    .input-eye .toggle-password {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #999;
+    }
+
+    .input-eye .toggle-password:hover {
+        color: #1890ff;
+    }
+
+    .toggle-password {
+        z-index: 10;
+        position: relative;
+    }
+
+    @keyframes fadeOut {
+        0% {
+            opacity: 1;
+        }
+
+        80% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+            display: none;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .profile-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<header class="main-header">
+    <div class="header-left">
+        <h1>PENGATURAN PROFIL</h1>
+    </div>
+    <div class="nav-group">
+        <a href="{{ url_for('main') }}" class="nav-btn"> Kembali ke Dashboard</a>
+    </div>
+</header>
+
+<div class="dashboard-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="profile-container">
+
+        <aside class="profile-card">
+            <div class="profile-info-center">
+
+                <div class="avatar-wrapper">
+                    {% if session.get('profile_image') %}
+                    <img src="{{ url_for('static', filename='uploads/' + session.get('profile_image')) }}?v={{ range(1,1000)|random }}"
+                        class="avatar-large" id="previewImage">
+                    {% else %}
+                    <img src="https://ui-avatars.com/api/?name={{ session.get('full_name', 'User') }}&size=140&background=1890ff&color=fff"
+                        class="avatar-large" id="previewImage">
+                    {% endif %}
+                </div>
+
+                <form action="{{ url_for('upload_profile') }}" method="POST" enctype="multipart/form-data">
+                    <div class="custom-file-upload">
+                        <label for="file-upload" class="file-label-custom" id="file-name-label">
+                            <i class="fas fa-cloud-upload-alt"></i> Pilih Foto Baru
+                        </label>
+                        <input id="file-upload" type="file" name="profile_image" accept="image/*"
+                            class="file-input-hidden" onchange="previewFile(event)">
+                    </div>
+
+                    <button type="submit" class="btn-save" style="padding:10px; font-size:14px; display: none;"
+                        id="btnSubmitPhoto">
+                        Simpan Perubahan Foto
+                    </button>
+                </form>
+
+                <div class="user-meta">
+                    <h3>{{ session.get('full_name', 'User') }}</h3>
+                    <p style="color: #888; font-size: 14px; margin-bottom: 5px;">{{ session.get('email', '') }}</p>
+                    <span class="role-badge {{ session.get('role', 'rf_engineer') }}">
+                        {{ session.get('role', 'RF Engineer').replace('_', ' ').title() }}
+                    </span>
+                </div>
+            </div>
+
+            <hr style="margin: 25px 0; border: 0; border-top: 1px solid #eee;">
+
+            <div style="font-size: 14px; color: #555;">
+                <p><strong>Status Akun:</strong> Aktif</p>
+                <p><strong>Sistem:</strong> 5G Drive Test Analysis</p>
+            </div>
+        </aside>
+
+        <section class="password-card">
+            <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-lock" style="color: #faad14;"></i> Keamanan & Password
+            </h3>
+
+            <form method="POST" action="{{ url_for('change_password') }}">
+                <div class="form-group password-wrapper">
+                    <label>Password Saat Ini</label>
+                    <div class="input-eye">
+                        <input type="password" name="old_password" class="form-control"
+                            placeholder="Masukkan password lama" required>
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                </div>
+
+                <div class="form-group password-wrapper">
+                    <label>Password Baru</label>
+                    <div class="input-eye">
+                        <input type="password" name="new_password" class="form-control" placeholder="Minimal 8 karakter"
+                            minlength="8" required>
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                </div>
+
+                <div class="form-group password-wrapper">
+                    <label>Konfirmasi Password Baru</label>
+                    <div class="input-eye">
+                        <input type="password" name="confirm_password" class="form-control"
+                            placeholder="Ulangi password baru" minlength="8" required>
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-save">Update Password</button>
+            </form>
+
+            <div
+                style="margin-top: 25px; padding: 15px; background: #fffbe6; border-left: 4px solid #ffe58f; font-size: 13px; border-radius: 4px;">
+                <strong>Tips Keamanan:</strong>
+                <ul style="margin: 5px 0 0 18px; padding: 0;">
+                    <li>Gunakan minimal 8 karakter.</li>
+                    <li>Gunakan campuran huruf, angka, dan simbol.</li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+<script>
+    function previewFile(event) {
+        const reader = new FileReader();
+        const file = event.target.files[0];
+        const label = document.getElementById('file-name-label');
+        const btnSubmit = document.getElementById('btnSubmitPhoto');
+
+        if (file) {
+            reader.onload = function () {
+                const output = document.getElementById('previewImage');
+                output.src = reader.result;
+                label.innerHTML = "<i class='fas fa-check'></i> " + file.name;
+                label.style.borderColor = "#52c41a";
+                label.style.color = "#52c41a";
+                btnSubmit.style.display = "block"; // Munculkan tombol simpan jika ada file
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.toggle-password').forEach(icon => {
+            icon.addEventListener('click', function () {
+
+                // ambil input di dalam parent yang sama
+                const input = this.closest('.input-eye').querySelector('input');
+
+                if (input.type === "password") {
+                    input.type = "text";
+                    this.classList.remove("fa-eye");
+                    this.classList.add("fa-eye-slash");
+                } else {
+                    input.type = "password";
+                    this.classList.remove("fa-eye-slash");
+                    this.classList.add("fa-eye");
+                }
+
+            });
+        });
+    });
+</script>
+{% endblock %}

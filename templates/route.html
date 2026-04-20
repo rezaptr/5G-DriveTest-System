@@ -1,0 +1,94 @@
+{% extends "base_app.html" %}
+
+{% block title %}Perencanaan Rute Drive Test 5G{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/route.css') }}">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<!-- CSS boleh tetap di sini -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
+{% endblock %}
+
+{% block content %}
+
+<!-- MAIN HEADER -->
+<header class="main-header">
+  <h1>PERENCANAAN RUTE DRIVE TEST 5G OTOMATIS</h1>
+</header>
+
+<!-- TOOLBAR -->
+<section class="route-toolbar">
+
+  <!-- Upload group: file input + status + tombol ganti -->
+  <div class="upload-group">
+    <label class="upload-label" for="fileInput">
+      <i class="fas fa-file-excel"></i> Upload File Site (XLSX)
+    </label>
+    <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none;">
+    <span id="uploadStatus" class="upload-status-text"></span>
+    <!-- Tombol hapus/ganti file — hanya muncul kalau ada data -->
+    <button id="btnClearSite" class="btn-clear-site" title="Hapus data site & upload file baru">
+      ✕ Ganti File
+    </button>
+  </div>
+
+  <input list="siteList" id="siteSearch" placeholder="🔍 Cari Site ID..." class="site-search-input">
+  <datalist id="siteList"></datalist>
+
+  <button id="btnGenerateRing">Generate Radius</button>
+  <button id="btnMainRoute">Generate Main Route</button>
+  <button id="btnSampling">Titik Sampling</button>
+  <button id="btnAltRoute">Generate Rute Alternatif</button>
+  <button id="btnExportKML">Export KML</button>
+  <button id="btnSimulate" disabled style="opacity:0.5;cursor:not-allowed;">Simulasi Drive Test</button>
+
+</section>
+
+<!-- MAIN LAYOUT -->
+<div class="route-container">
+
+  <!-- MAP -->
+  <div class="route-map">
+    <div id="map" style="height:100%;width:100%;"></div>
+    <div id="infoText" class="info-text-banner"></div>
+  </div>
+
+  <!-- INFO PANEL -->
+  <aside class="route-info">
+
+    <div class="info-box">
+      <h3>Status Sistem</h3>
+      <p id="statusDeadEnd">⏳ Menunggu analisis rute...</p>
+      <p id="statusRoadType">⏳ Menunggu analisis jalan...</p>
+    </div>
+
+    <div class="info-box">
+      <h3>Informasi Rute Utama</h3>
+      <p>📏 Total Jarak: <b id="totalDistance">-</b></p>
+      <p>⏱️ Estimasi Waktu: <b id="estTime">-</b></p>
+      <p>🚗 Kecepatan Rata-rata: <b id="avgSpeed">-</b></p>
+      <p>📍 Titik Sampling: <b id="samplingCount">-</b></p>
+    </div>
+
+    <div class="info-box">
+      <h3>Informasi Rute Alternatif</h3>
+      <p>📏 Total Jarak: <b id="altDistance">-</b></p>
+      <p>⏱️ Estimasi Waktu: <b id="altTime">-</b></p>
+      <p>🚗 Kecepatan Rata-rata: <b id="altSpeed">-</b></p>
+      <p>📊 Status: <b id="altStatus">Belum di-generate</b></p>
+    </div>
+
+    <button class="reset-btn" id="btnReset">Reset Semua Rute</button>
+
+  </aside>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% endblock %}

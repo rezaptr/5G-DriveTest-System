@@ -1,0 +1,111 @@
+/* ===== GLOBAL RESET ===== */
+
+#flash-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
+.flash-msg {
+  margin-bottom: 10px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  opacity: 0.95;
+  animation: slideIn 0.3s ease;
+}
+
+/* warna kategori */
+.flash-msg.success { background: #52c41a; }
+.flash-msg.warning { background: #faad14; }
+.flash-msg.danger  { background: #ff4d4f; }
+.flash-msg.info    { background: #1890ff; }
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 0.95;
+    transform: translateX(0);
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background-color: #e8e8e8;
+  color: #1E1E1E;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  background-color: #1F3C88;
+  padding: 18px 40px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-btn {
+  text-decoration: none;
+  background-color: #3F72AF;
+  color: #FFFFFF;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.nav-btn:hover {
+  background-color: #1F3C88;
+}
+
+/* ===== GENERAL CONTAINER ===== */
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 50px 30px;
+}
+
+/* ===== BUTTON GLOBAL ===== */
+.btn {
+  padding: 14px 40px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.primary {
+  background-color: #00ADB5;
+  color: #FFFFFF;
+}
+
+.primary:hover {
+  background-color: #00959c;
+}
+
+.secondary {
+  background-color: #00ADB5;
+  color: #FFFFFF;
+}
+
+.secondary:hover {
+  background-color: #00959c;
+}

@@ -1,0 +1,135 @@
+{% extends "base_app.html" %}
+
+{% block title %}
+Simulasi Drive Test 5G - RSRP dan SINR
+{% endblock %}
+
+{% block extra_css %}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<!-- Global CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/drivetest.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<!-- Leaflet MarkerCluster -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HEADER ================= -->
+<header class="main-header">
+  <h1>SIMULASI HASIL DRIVE TEST 5G - RSRP DAN SINR</h1>
+</header>
+
+<!-- GANTINYA -->
+<section class="simulation-toolbar">
+  <!-- Model ditentukan otomatis dari kolom Clutter di XLSX -->
+  <div class="model-info-box">
+    <span class="model-info-label">🗺️ Clutter:</span>
+    <span id="paramClutter" class="model-info-value">—</span>
+    <span class="model-info-label" style="margin-left:16px;">📡 Model:</span>
+    <span id="paramModel" class="model-info-value">—</span>
+  </div>
+
+  <button id="btnGenerateSampling" class="btn-toolbar">Generate Titik Sampling</button>
+  <button id="btnCalculateRSRP" class="btn-toolbar">Hitung RSRP</button>
+  <button id="btnCalculateSINR" class="btn-toolbar">Hitung SINR</button>
+  <button id="btnBackToRoute" class="btn-toolbar">← Kembali ke Route Planning</button>
+</section>
+
+<!-- ================= MAIN LAYOUT ================= -->
+<div class="simulation-container">
+
+  <!-- ===== LEFT : MAP AREA ===== -->
+  <div class="simulation-map-wrapper">
+
+    <div id="rsrpLegend" class="rsrp-legend" style="display: none;">
+      <h4 id="legendTitle">RSRP (dBm)</h4>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Rentang</th>
+            <th>%</th>
+          </tr>
+        </thead>
+        <tbody id="legendTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Map Container -->
+    <div id="map-simulation"></div>
+
+  </div>
+
+  <!-- ===== RIGHT : INFO PANEL ===== -->
+  <aside class="simulation-info">
+
+    <div class="info-box">
+      <h3>📡 SITE INFORMATION</h3>
+      <ul>
+        <li><strong>Site ID:</strong> <span id="infoSiteId">-</span></li>
+        <li><strong>Latitude:</strong> <span id="infoLat">-</span></li>
+        <li><strong>Longitude:</strong> <span id="infoLng">-</span></li>
+        <li><strong>Jumlah Sektor:</strong> <span id="infoSectors">-</span></li>
+        <li><strong>Antenna Height:</strong> <span id="infoHeight">- m</span></li>
+      </ul>
+    </div>
+
+    <div class="info-box">
+      <h3>⚙️ PARAMETER SIMULASI</h3>
+      <ul>
+        <li><strong>Model Propagasi:</strong> <span id="paramModel">-</span></li>
+        <li><strong>Frekuensi:</strong> <span id="paramFreq">2300 MHz</span></li>
+        <li><strong>Bandwidth:</strong> <span id="paramBW">30 MHz</span></li>
+        <li><strong>Tx Power:</strong> <span id="paramTxPower">46 dBm</span></li>
+        <li><strong>Antenna Height:</strong> <span id="paramHeight">- m</span></li>
+      </ul>
+    </div>
+
+    <div class="info-box">
+      <h3>📊 ROUTE DATA</h3>
+      <ul>
+        <li><strong>Panjang Rute:</strong> <span id="routeDistance">-</span></li>
+        <li><strong>Estimasi Waktu:</strong> <span id="routeTime">-</span></li>
+        <li><strong>Sampling Interval:</strong> <span id="samplingInterval">10 m</span></li>
+        <li><strong>Jumlah Titik Sampling:</strong> <span id="samplingCount">-</span></li>
+      </ul>
+    </div>
+
+    <div id="resultBox" class="info-box result-box" style="display: none;">
+      <h3 id="resultTitle">📶 Simulasi Complete</h3>
+      <p id="resultStats"></p>
+      <div class="success-text" id="resultMessage">
+        Menunggu kalkulasi...
+      </div>
+    </div>
+
+    <button id="btnExportCSV" class="btn-export" disabled>
+      💾 Export Data CSV
+    </button>
+
+  </aside>
+
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay" style="display: none;">
+  <div class="spinner"></div>
+  <h2>Loading Simulation Data...</h2>
+  <p>Mohon tunggu sebentar</p>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Simulation JS -->
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script src="{{ url_for('static', filename='js/simulation.js') }}"></script>
+{% endblock %}

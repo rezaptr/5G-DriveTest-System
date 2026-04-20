@@ -1,0 +1,280 @@
+/* Reset Dasar */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #e8e8e8;
+    height: 100vh;
+    display: flex;
+    flex-direction: column; /* Biar header di atas, konten di bawah */
+    overflow: hidden;
+}
+
+/* ===== HEADER ===== */
+/* ── HEADER ── */
+.main-header {
+  width: 100%;
+  background: linear-gradient(135deg, #1F3C88 0%, #163070 60%, #0F2358 100%);
+  padding: 0 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  height: 68px;
+  flex-shrink: 0;
+  box-shadow: 0 3px 16px rgba(15, 35, 88, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+/* garis dekoratif di header */
+.main-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background-size: 200% 100%;
+}
+
+.main-header h1 { font-size: 20px; font-weight: 600; margin: 0; }
+.nav-group { display: flex; gap: 12px; }
+
+.nav-btn {
+  text-decoration: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  padding: 8px 22px;
+  border-radius: 6px;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+}
+
+.nav-btn:hover {
+  background: rgba(255,255,255,0.22);
+  border-color: rgba(255,255,255,0.5);
+  transform: translateY(-1px);
+}
+
+/* ===== VIEWPORT ===== */
+.main-viewport {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* ===== CARD AUTH (Shared for Login & Signup) ===== */
+.card-auth {
+    background-color: #FFFFFF;
+    width: 100%;
+    max-width: 1000px; /* Ukuran pas agar tidak terlalu lebar */
+    height: 550px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    display: flex; /* INI KUNCINYA: Membagi kiri dan kanan */
+    overflow: hidden;
+}
+
+/* Bagian Gambar (Kiri) */
+.card-left {
+    flex: 1; /* Ambil 50% */
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.card-left img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Bagian Form (Kanan) */
+.card-right {
+    flex: 1; /* Ambil 50% */
+    padding: 50px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.form-header h1 {
+    font-size: 34px;
+    font-weight: 800;
+    color: #1F3C88;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.input-eye {
+    position: relative;
+}
+
+.input-eye input {
+    width: 100%;
+    padding-right: 40px;
+}
+
+.input-eye .toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #999;
+}
+
+.input-eye .toggle-password:hover {
+    color: #1890ff;
+}
+
+/* Input Styles */
+.auth-form {
+    width: 100%;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #1F3C88;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    text-align: left;
+}
+
+.login-input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 2px solid #e2e8f0;
+    background-color: #f8fafc;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.login-input:focus {
+    border-color: #1F3C88;
+    background-color: #fff;
+}
+
+/* Button */
+.btn-auth-submit {
+    width: 100%;
+    padding: 16px;
+    background-color: #1F3C88;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.btn-auth-submit:hover {
+    background-color: #16306D;
+}
+
+.auth-footer-text {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #64748b;
+    text-align: left;
+}
+
+.auth-footer-text a {
+    color: #1F3C88;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+/* Responsive Grid untuk Signup (Nama & Role sejajar) */
+.input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* ========================= */
+/* AUTH RESPONSIVE FIX */
+/* ========================= */
+
+@media (max-width: 768px) {
+
+  .main-viewport {
+    align-items: flex-start;
+    padding-top: 30px;
+  }
+
+  .card-auth {
+    flex-direction: column; /* dari kiri-kanan jadi atas-bawah */
+    height: auto; /* biar ngikut konten */
+  }
+
+  .card-left {
+    padding: 20px;
+  }
+
+  .card-left img {
+    max-width: 250px;
+  }
+
+  .card-right {
+    padding: 30px 25px;
+  }
+
+  .form-header h1 {
+    text-align: center;
+  }
+
+  .subtitle {
+    text-align: center;
+  }
+
+  .auth-footer-text {
+    text-align: center;
+  }
+
+  /* signup grid jadi 1 kolom */
+  .input-row {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .card-left img {
+    max-width: 200px;
+  }
+
+  .card-right {
+    padding: 20px 15px;
+  }
+
+}

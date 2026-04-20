@@ -1,0 +1,160 @@
+{% extends "base_app.html" %}
+
+{% block title %}Visualisasi Coverage 5G - RSRP dan SINR{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/coverage.css') }}">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
+{% endblock %}
+
+{% block content %}
+<!-- MAIN HEADER -->
+<header class="main-header">
+  <h1>VISUALISASI COVERAGE JARINGAN 5G - RSRP DAN SINR</h1>
+</header>
+
+<!-- TOOLBAR -->
+<section class="coverage-toolbar">
+
+  <!-- Source badge + tombol upload manual + ganti file -->
+  <div class="source-group">
+    <span id="sourceBadge" class="source-badge">⏳ Memuat data...</span>
+    <button id="loadShapefileBtn" class="toolbar-btn-secondary" title="Upload XLSX baru (akan menggantikan data tersimpan)">
+      <i class="fas fa-file-upload"></i> Upload XLSX
+    </button>
+    <button id="btnClearSite" class="btn-clear-site" title="Hapus data site & upload ulang" style="display:none;">
+      ✕ Ganti File
+    </button>
+  </div>
+
+  <input list="siteList" id="siteSearch" class="site-search" placeholder="Search Site ID">
+  <datalist id="siteList"></datalist>
+
+  <button id="searchSiteBtn" class="toolbar-btn">
+    <i class="fas fa-search"></i> Search Site
+  </button>
+
+  <button id="toggleBuildingBtn" class="toolbar-btn">
+    <i class="fas fa-building"></i> <span id="buildingBtnText">Show Buildings</span>
+  </button>
+
+</section>
+
+<!-- MAIN CONTENT AREA -->
+<div class="coverage-container">
+
+  <!-- LEFT PANEL - MAP -->
+  <div class="map-panel">
+    <div id="coverageMap"></div>
+
+    <!-- LEGEND ON MAP -->
+    <div id="mapLegend" class="map-legend" style="display: none;">
+      <h4 id="legendTitle">RSRP (dBm)</h4>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Rentang</th>
+            <th>%</th>
+          </tr>
+        </thead>
+        <tbody id="legendTableBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL - ANALYSIS RESULTS -->
+  <div class="analysis-panel">
+    <h2>Parameter & Hasil Analisis</h2>
+
+    <!-- CONTROL PARAMETERS -->
+    <div class="control-card">
+      <h3><i class="fas fa-sliders-h"></i> Parameter Coverage</h3>
+
+      <div class="control-group">
+        <label>Tipe Coverage:</label>
+        <div class="viz-button-group">
+          <button id="visualizeRSRP" class="viz-btn-compact active">
+            <i class="fas fa-signal"></i> RSRP
+          </button>
+          <button id="visualizeSINR" class="viz-btn-compact">
+            <i class="fas fa-broadcast-tower"></i> SINR
+          </button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Grid Size (meter):</label>
+        <select id="gridSize">
+          <option value="10">10m</option>
+          <option value="25">25m</option>
+          <option value="50" selected>50m</option>
+          <option value="100">100m</option>
+          <option value="150">150m</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label>Radius Coverage (meter):</label>
+        <input type="number" id="coverageRadius" value="500" min="100" max="2000" step="50">
+      </div>
+
+      <div class="control-group">
+        <label>Tinggi Antena (meter):</label>
+        <div class="height-control">
+          <input type="number" id="antennaHeight" value="30" min="10" max="100" step="5">
+          <span class="height-badge" id="heightBadge">Default</span>
+        </div>
+        <small class="help-text">📊 Ubah tinggi untuk melihat pengaruhnya terhadap coverage</small>
+      </div>
+    </div>
+
+    <!-- COVERAGE ANALYSIS RESULTS -->
+    <div class="stats-card">
+      <h3><i class="fas fa-chart-line"></i> Hasil Analisis Coverage</h3>
+      <div id="analysisResult" class="analysis-content">
+        <div class="waiting-state">
+          <i class="fas fa-info-circle"></i>
+          <p>Pilih site dan tipe coverage untuk melihat analisis</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- DETAILED STATISTICS -->
+    <div class="detailed-stats">
+      <h3><i class="fas fa-chart-pie"></i> Statistik Coverage</h3>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <label>Total Area</label>
+          <span id="totalArea">0 km²</span>
+        </div>
+        <div class="stat-box excellent">
+          <label>Excellent</label>
+          <span id="excellentCoverage">0%</span>
+        </div>
+        <div class="stat-box good">
+          <label>Good</label>
+          <span id="goodCoverage">0%</span>
+        </div>
+        <div class="stat-box poor">
+          <label>Poor</label>
+          <span id="poorCoverage">0%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FILE INPUT HIDDEN -->
+<input type="file" id="shapefileInput" accept=".xlsx,.xls" style="display: none;">
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<script src="{{ url_for('static', filename='js/coverage.js') }}"></script>
+{% endblock %}

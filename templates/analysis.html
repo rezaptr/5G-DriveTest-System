@@ -1,0 +1,142 @@
+{% extends "base_app.html" %}
+
+{% block title %}Analisis Perbandingan Drive Test vs Simulasi{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/analysis.css') }}">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block content %}
+
+<!-- MAIN HEADER -->
+<header class="main-header">
+  <h1>ANALISIS PERBANDINGAN HASIL DRIVE TEST VS SIMULASI</h1>
+</header>
+
+<!-- TOOLBAR -->
+<section class="analysis-toolbar">
+  <button id="uploadDTBtn" class="toolbar-btn">
+    <i class="fas fa-file-upload"></i> Upload Logfile Drive Test
+  </button>
+
+  <button id="uploadSimBtn" class="toolbar-btn">
+    <i class="fas fa-upload"></i> Upload Hasil Simulasi
+  </button>
+
+  <!-- ✅ DUA TOMBOL TERPISAH -->
+  <button id="processRSRPBtn" class="toolbar-btn btn-process-rsrp" disabled>
+    <i class="fas fa-signal"></i> Proses Analisa RSRP
+  </button>
+
+  <button id="processSINRBtn" class="toolbar-btn btn-process-sinr" disabled>
+    <i class="fas fa-chart-line"></i> Proses Analisa SINR
+  </button>
+
+  <div class="upload-status">
+    <span id="dtStatus"  class="status-badge">DT: -</span>
+    <span id="simStatus" class="status-badge">Sim: -</span>
+  </div>
+</section>
+
+<!-- MAIN CONTENT AREA -->
+<div class="analysis-container">
+
+  <!-- TOP SECTION — MAPS -->
+  <div class="maps-section">
+
+    <!-- LEFT MAP — DRIVE TEST REAL -->
+    <div class="map-container">
+      <div class="map-header">
+        <h3>Drive Test Real</h3>
+        <div class="map-controls-compact">
+          <label>Metric:</label>
+          <select id="dtMetric">
+            <option value="rsrp">RSRP</option>
+            <option value="sinr">SINR</option>
+          </select>
+        </div>
+      </div>
+      <div id="dtMap" class="comparison-map"></div>
+      <div id="dtLegend" class="map-legend" style="display:none;">
+        <h4 id="dtLegendTitle">RSRP (dBm)</h4>
+        <table>
+          <thead><tr><th></th><th>Rentang</th><th>%</th></tr></thead>
+          <tbody id="dtLegendBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- RIGHT MAP — HASIL SIMULASI -->
+    <div class="map-container">
+      <div class="map-header">
+        <h3>Hasil Simulasi</h3>
+        <div class="map-controls-compact">
+          <label>Metric:</label>
+          <select id="simMetric">
+            <option value="rsrp">RSRP</option>
+            <option value="sinr">SINR</option>
+          </select>
+        </div>
+      </div>
+      <div id="simMap" class="comparison-map"></div>
+      <div id="simLegend" class="map-legend" style="display:none;">
+        <h4 id="simLegendTitle">RSRP (dBm)</h4>
+        <table>
+          <thead><tr><th></th><th>Rentang</th><th>%</th></tr></thead>
+          <tbody id="simLegendBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM SECTION — COMPARISON TABLE -->
+  <div class="comparison-section">
+    <h2 id="analysisTableTitle"><i class="fas fa-balance-scale"></i> Hasil Perbandingan</h2>
+
+    <div class="comparison-table-container">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>KATEGORI</th>
+            <th>DT REAL</th>
+            <th>SIMULASI</th>
+            <th>Δ%</th>
+            <th>ANALISIS</th>
+          </tr>
+        </thead>
+        <tbody id="comparisonTableBody">
+          <tr>
+            <td colspan="5" class="waiting-row">
+              Klik "Proses Analisa RSRP" atau "Proses Analisa SINR" untuk melihat hasil perbandingan
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Overall Analysis -->
+    <div class="overall-analysis">
+      <h3><i class="fas fa-chart-bar"></i> Analisis Keseluruhan</h3>
+      <div id="overallAnalysisContent" class="analysis-content">
+        <p class="waiting-text">Upload data dan klik tombol analisa untuk melihat hasil</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FILE INPUTS HIDDEN -->
+<input type="file" id="dtFileInput"  accept=".csv,.txt,.log"  style="display:none;">
+<input type="file" id="simFileInput" accept=".csv,.txt,.xlsx" style="display:none;">
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="{{ url_for('static', filename='js/analysis.js') }}"></script>
+{% endblock %}

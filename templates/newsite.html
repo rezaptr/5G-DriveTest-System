@@ -1,0 +1,216 @@
+{% extends "base_app.html" %}
+
+{% block title %}Perencanaan Site Baru 5G{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/newsite.css') }}">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block content %}
+
+<!-- MAIN HEADER -->
+<header class="main-header">
+  <h1>PERENCANAAN SITE BARU 5G — COVERAGE PREDICTION</h1>
+</header>
+
+<!-- TOOLBAR -->
+<section class="newsite-toolbar">
+  <div class="toolbar-info">
+    <i class="fas fa-hand-pointer"></i>
+    <span>Klik pada peta atau masukkan koordinat untuk menentukan lokasi site baru</span>
+  </div>
+  <button id="clearSiteBtn" class="toolbar-btn btn-danger" style="display:none;">
+    <i class="fas fa-trash"></i> Clear Site
+  </button>
+</section>
+
+<!-- MAIN LAYOUT -->
+<div class="newsite-container">
+
+  <!-- LEFT — MAP -->
+  <div class="map-panel">
+    <div id="newsiteMap"></div>
+
+    <!-- Legend overlay -->
+    <div id="mapLegend" class="map-legend" style="display:none;">
+      <h4 id="legendTitle">RSRP (dBm)</h4>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Rentang</th>
+            <th></th>
+            <th>%</th>
+          </tr>
+        </thead>
+        <tbody id="legendTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RIGHT — CONFIGURATION -->
+  <div class="analysis-panel">
+    <h2>Konfigurasi &amp; Analisis Site</h2>
+
+    <!-- LOKASI -->
+    <div class="control-card">
+      <h3><i class="fas fa-map-marker-alt"></i> Lokasi Site</h3>
+
+      <div class="location-input-group">
+        <div class="control-group">
+          <label>Latitude</label>
+          <input type="number" id="siteLatitude" placeholder="-6.208800" step="0.000001" min="-90" max="90">
+        </div>
+        <div class="control-group">
+          <label>Longitude</label>
+          <input type="number" id="siteLongitude" placeholder="106.845600" step="0.000001" min="-180" max="180">
+        </div>
+        <button id="setSiteLocationBtn" class="set-location-btn">
+          <i class="fas fa-map-pin"></i> Set Lokasi
+        </button>
+      </div>
+
+      <div class="current-location" id="currentLocation" style="display:none;">
+        <i class="fas fa-check-circle"></i>
+        <span id="locationText">Site belum ditentukan</span>
+      </div>
+    </div>
+
+    <!-- KONFIGURASI SITE -->
+    <div class="control-card">
+      <h3><i class="fas fa-broadcast-tower"></i> Konfigurasi Antena</h3>
+
+      <div class="control-group">
+        <label>Jumlah Sektor</label>
+        <select id="sectorCount">
+          <option value="1">1 Sektor (Omni)</option>
+          <option value="2">2 Sektor</option>
+          <option value="3" selected>3 Sektor</option>
+          <option value="4">4 Sektor</option>
+          <option value="6">6 Sektor</option>
+        </select>
+      </div>
+
+      <!-- Azimuth inputs generated dynamically -->
+      <div id="azimuthInputs" class="azimuth-inputs"></div>
+
+      <div class="control-group">
+        <label>Tinggi Antena (meter)</label>
+        <div class="height-control">
+          <input type="number" id="antennaHeight" value="30" min="10" max="120" step="5">
+          <span class="height-badge" id="heightBadge">30m</span>
+        </div>
+        <small class="help-text">↑ Makin tinggi → path loss berkurang → RSRP lebih baik</small>
+      </div>
+    </div>
+
+    <!-- PARAMETER COVERAGE -->
+    <div class="control-card">
+      <h3><i class="fas fa-sliders-h"></i> Parameter Coverage</h3>
+
+      <div class="control-group">
+        <label>Model Propagasi</label>
+        <select id="propagationModel">
+          <option value="urban_macro" selected>Urban Macro</option>
+          <option value="urban_micro">Urban Micro</option>
+          <option value="suburban">Suburban</option>
+          <option value="rural">Rural</option>
+        </select>
+        <small class="help-text">Urban Macro untuk area luas, Micro untuk dense urban</small>
+      </div>
+
+      <!-- ✅ TAMBAHAN: CLUTTER / ENVIRONMENT -->
+      <div class="control-group">
+        <label>Tipe Lingkungan (Clutter)</label>
+        <select id="clutterSelect" class="dropdown-model">
+          <option value="urban" selected>Urban</option>
+          <option value="dense_urban">Dense Urban</option>
+          <option value="metropolitan">Metropolitan</option>
+          <option value="sub_urban">Sub Urban</option>
+          <option value="rural">Rural</option>
+        </select>
+        <small class="help-text">Menentukan kondisi lingkungan untuk akurasi propagasi</small>
+      </div>
+
+      <!-- ✅ TAMBAHAN: MODEL LABEL -->
+      <div class="control-group">
+        <label>Model Aktif</label>
+        <span id="paramModel" style="color:#00c7be; font-weight:600;">
+          UMA NLOS
+        </span>
+      </div>
+
+      <div class="control-group">
+        <label>Tipe Coverage</label>
+        <div class="viz-button-group">
+          <button id="visualizeRSRP" class="viz-btn-compact active">
+            <i class="fas fa-signal"></i> RSRP
+          </button>
+          <button id="visualizeSINR" class="viz-btn-compact">
+            <i class="fas fa-broadcast-tower"></i> SINR
+          </button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Grid Size (meter)</label>
+        <select id="gridSize">
+          <option value="10">10 m</option>
+          <option value="25">25 m</option>
+          <option value="50" selected>50 m</option>
+          <option value="100">100 m</option>
+          <option value="150">150 m</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label>Radius Coverage (meter)</label>
+        <input type="number" id="coverageRadius" value="500" min="100" max="2000" step="50">
+      </div>
+    </div>
+
+    <!-- HASIL ANALISIS -->
+    <div class="stats-card">
+      <h3><i class="fas fa-chart-line"></i> Prediksi Coverage</h3>
+      <div id="analysisResult" class="analysis-content">
+        <div class="waiting-state">
+          <i class="fas fa-hand-pointer"></i>
+          <p>Tentukan lokasi site untuk melihat prediksi coverage</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATISTIK -->
+    <div class="detailed-stats">
+      <h3><i class="fas fa-chart-pie"></i> Statistik Coverage</h3>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <label>Total Area</label>
+          <span id="totalArea">0 km²</span>
+        </div>
+        <div class="stat-box excellent">
+          <label>Excellent</label>
+          <span id="excellentCoverage">0%</span>
+        </div>
+        <div class="stat-box good">
+          <label>Good</label>
+          <span id="goodCoverage">0%</span>
+        </div>
+        <div class="stat-box poor">
+          <label>Poor</label>
+          <span id="poorCoverage">0%</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /analysis-panel -->
+</div><!-- /newsite-container -->
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{{ url_for('static', filename='js/newsite.js') }}"></script>
+{% endblock %}

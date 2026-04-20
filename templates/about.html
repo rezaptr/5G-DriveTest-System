@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}About | Sistem Simulasi Drive Test 5G{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/helpabout.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<header class="main-header">
+  <h1>SISTEM SIMULASI HASIL DRIVE TEST 5G</h1>
+  <div class="nav-group">
+    <a href="{{ url_for('welcome') }}" class="nav-btn">Kembali</a>
+    <a href="{{ url_for('help_page') }}" class="nav-btn">Help</a>
+  </div>
+</header>
+
+<main class="about-container">
+
+  <!-- HERO -->
+  <div class="about-hero">
+    <span class="about-hero-icon">📡</span>
+    <h2>Tentang Sistem</h2>
+    <p>
+      Platform berbasis web untuk simulasi dan visualisasi geospasial kualitas
+      jaringan 5G — membantu perencanaan drive test lebih efisien sebelum
+      pengukuran lapangan dilakukan.
+    </p>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div class="about-stats">
+    <div class="stat-card">
+      <span class="stat-num">5</span>
+      <span class="stat-label">Modul Utama Sistem</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">5G</span>
+      <span class="stat-label">Fokus Teknologi Jaringan</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">NR</span>
+      <span class="stat-label">New Radio — 5G Standard</span>
+    </div>
+  </div>
+
+  <!-- INFO GRID -->
+  <div class="info-grid">
+
+    <div class="info-box">
+      <h3><span class="box-icon">🎯</span> Tujuan</h3>
+      <span>
+        Membantu analisis awal performa jaringan 5G secara efisien, cepat,
+        dan terstruktur sebelum proses drive test konvensional dilakukan di lapangan.
+      </span>
+    </div>
+
+    <div class="info-box">
+      <h3><span class="box-icon">📊</span> Fokus Sistem</h3>
+      <span>
+        Simulasi hasil drive test, analisis coverage, serta evaluasi kualitas
+        jaringan berdasarkan parameter radio RSRP dan SINR.
+      </span>
+    </div>
+
+    <div class="info-box">
+      <h3><span class="box-icon">👤</span> Pengguna</h3>
+      <span>
+        Mahasiswa, peneliti, dan praktisi jaringan telekomunikasi yang membutuhkan
+        gambaran performa jaringan 5G sebelum turun lapangan.
+      </span>
+    </div>
+
+  </div>
+
+  <!-- TEKNOLOGI -->
+  <div class="tech-section">
+    <h3>🛠 Teknologi yang Digunakan</h3>
+    <div class="tech-tags">
+      <span class="tech-tag blue">Python / Flask</span>
+      <span class="tech-tag blue">Leaflet.js</span>
+      <span class="tech-tag blue">Chart.js</span>
+      <span class="tech-tag green">OpenStreetMap</span>
+      <span class="tech-tag green">OSRM Routing</span>
+      <span class="tech-tag teal">PapaParse</span>
+      <span class="tech-tag teal">SheetJS (XLSX)</span>
+      <span class="tech-tag orange">COST-Hata Path Loss</span>
+      <span class="tech-tag orange">5G NR RSRP / SINR Model</span>
+    </div>
+  </div>
+
+  <footer class="about-footer">
+    Sistem Simulasi Drive Test 5G &copy; 2026
+  </footer>
+
+</main>
+
+{% endblock %}

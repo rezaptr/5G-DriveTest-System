@@ -1,0 +1,287 @@
+/* Font Setup */
+body {
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+  overflow: hidden;
+  /* Mencegah scroll sesuai permintaan */
+  background-color: #e8e8e8;
+}
+
+/* ── HEADER ── */
+.main-header {
+  width: 100%;
+  background: linear-gradient(135deg, #1F3C88 0%, #163070 60%, #0F2358 100%);
+  padding: 0 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  height: 68px;
+  flex-shrink: 0;
+  box-shadow: 0 3px 16px rgba(15, 35, 88, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+/* garis dekoratif di header */
+.main-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-size: 200% 100%;
+}
+
+.main-header h1 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.nav-group {
+  display: flex;
+  gap: 12px;
+}
+
+.nav-btn {
+  text-decoration: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  padding: 8px 22px;
+  border-radius: 6px;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+/* ===== CONTAINER & CARD ===== */
+.container {
+  height: calc(100vh - 65px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+.card-welcome {
+  background-color: #FFFFFF;
+  width: 100%;
+  max-width: 1300px;
+  height: 550px;
+  /* ✅ balikin fix height */
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 0 20px 50px rgba(31, 60, 136, 0.12);
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+
+/* BG BLOB DI DALAM CARD (Sisi Kanan) */
+.bg-blob-inner {
+  position: absolute;
+  right: -100px;
+  bottom: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(31, 60, 136, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+  z-index: 0;
+}
+
+/* ===== LEFT IMAGE ===== */
+.card-left-welcome {
+  position: absolute;
+  top: 50%;
+  left: 60px;
+  transform: translateY(-50%);
+  width: 480px;
+  height: auto;
+  z-index: 2;
+}
+
+.card-left-welcome img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ===== RIGHT TEXT (RATA KIRI) ===== */
+.card-right-welcome {
+  position: absolute;
+  top: 50%;
+  right: 60px;
+  transform: translateY(-50%);
+  width: 620px;
+  /* disesuaikan agar tidak tabrakan dengan gambar */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+  /* RATA KIRI */
+  z-index: 2;
+}
+
+.card-right-welcome h1 {
+  font-size: 38px;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  font-weight: 800;
+  /* SANGAT TEBAL */
+  color: #1a1a1a;
+  /* Warna Hitam */
+}
+
+/* Warna Biru Spesifik untuk H1 */
+.text-blue {
+  color: #1F3C88;
+}
+
+.card-right-welcome p {
+  font-size: 17px;
+  margin-bottom: 35px;
+  color: #555555;
+  line-height: 1.7;
+  max-width: 550px;
+  margin-left: 0;
+  /* Pastikan margin kiri 0 */
+}
+
+/* BUTTONS (RATA KIRI) */
+.btn-group {
+  display: flex;
+  justify-content: flex-start;
+  /* RATA KIRI */
+  gap: 20px;
+}
+
+.btn {
+  padding: 15px 45px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.btn.primary {
+  background-color: #1F3C88;
+  color: #FFFFFF;
+  box-shadow: 0 4px 15px rgba(31, 60, 136, 0.2);
+}
+
+.btn.primary:hover {
+  background-color: #16306D;
+  transform: translateY(-2px);
+}
+
+.btn.secondary {
+  border: 2px solid #1F3C88;
+  color: #1F3C88;
+  background-color: transparent;
+}
+
+.btn.secondary:hover {
+  background-color: #f0f4ff;
+  transform: translateY(-2px);
+}
+
+/* ============================= */
+/* RESPONSIVE FIX (TANPA UBAH DESIGN) */
+/* ============================= */
+
+/* Tablet */
+@media (max-width: 1024px) {
+
+  .card-left-welcome {
+    width: 380px;
+    left: 40px;
+  }
+
+  .card-right-welcome {
+    width: 500px;
+    right: 40px;
+  }
+
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+  .container {
+    height: auto;
+    padding: 20px;
+    align-items: flex-start;
+    /* biar ga ke tengah aneh */
+  }
+
+  .card-welcome {
+    height: auto;
+    /* hanya di mobile */
+    padding: 30px 20px;
+  }
+
+  .card-left-welcome,
+  .card-right-welcome {
+    position: static;
+    transform: none;
+    width: 100%;
+    text-align: center;
+  }
+
+  .card-left-welcome {
+    margin-bottom: 20px;
+  }
+
+  .card-left-welcome img {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .card-right-welcome {
+    align-items: center;
+  }
+
+  .card-right-welcome p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .btn-group {
+    justify-content: center;
+  }
+
+}
+
+/* HP kecil */
+@media (max-width: 480px) {
+
+  .main-header {
+    padding: 0 20px;
+  }
+
+  .main-header h1 {
+    font-size: 16px;
+  }
+
+  .nav-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+
+  .card-left-welcome img {
+    max-width: 250px;
+  }
+
+}

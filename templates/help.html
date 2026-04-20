@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Help - Sistem Simulasi Drive Test 5G{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/helpabout.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<header class="main-header">
+  <h1>SISTEM SIMULASI HASIL DRIVE TEST 5G</h1>
+  <div class="nav-group">
+    <a href="{{ url_for('welcome') }}" class="nav-btn">Kembali</a>
+    <a href="{{ url_for('about') }}" class="nav-btn">About</a>
+  </div>
+</header>
+
+<main class="help-container">
+
+  <!-- HERO -->
+  <div class="help-hero">
+    <span class="help-hero-icon">📖</span>
+    <h2>Help &amp; Panduan Penggunaan</h2>
+    <p>
+      Platform web untuk perencanaan rute drive test dan simulasi kualitas
+      jaringan 5G — membantu estimasi performa sinyal sebelum
+      pengukuran lapangan dilakukan.
+    </p>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section">
+    <h3>
+      <span class="section-num">1</span>
+      Alur Penggunaan Sistem
+    </h3>
+    <ol class="step-list">
+      <li>Unggah file site dalam format XLSX yang berisi data koordinat dan konfigurasi antena.</li>
+      <li>Pilih site (gNodeB) yang akan dianalisis dari daftar yang tersedia.</li>
+      <li>Generate Ring sebagai batas radius perencanaan rute drive test.</li>
+      <li>Generate Main Route kendaraan drive test menggunakan layanan routing OSRM.</li>
+      <li>Jalankan simulasi RSRP, SINR, atau Coverage sepanjang rute yang terbentuk.</li>
+      <li>Analisis dan evaluasi hasil simulasi pada peta interaktif.</li>
+    </ol>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section">
+    <h3>
+      <span class="section-num">2</span>
+      Penjelasan Fitur Utama
+    </h3>
+
+    <p><strong>Upload File Site (XLSX)</strong></p>
+    <p>
+      Digunakan untuk memuat data site jaringan yang berisi informasi koordinat,
+      azimuth, dan beamwidth. Data ini ditampilkan pada peta sebagai penanda site dan sektor.
+    </p>
+
+    <p><strong>Generate Ring</strong></p>
+    <p>
+      Menghasilkan ring atau radius di sekitar site terpilih sebagai batas awal
+      perencanaan rute drive test. Ukuran ring dapat disesuaikan.
+    </p>
+
+    <p><strong>Generate Main Route</strong></p>
+    <p>
+      Membentuk rute utama kendaraan drive test berdasarkan ring yang telah dibuat,
+      menggunakan layanan routing OpenStreetMap (OSRM) secara realtime.
+    </p>
+
+    <p><strong>Simulasi RSRP / SINR / Coverage</strong></p>
+    <p>
+      Mensimulasikan estimasi kualitas sinyal jaringan 5G sepanjang rute drive test.
+      Hasil simulasi divisualisasikan dengan peta berwarna berdasarkan kategori kualitas.
+    </p>
+
+    <p><strong>Analisis &amp; Evaluasi</strong></p>
+    <p>
+      Halaman Analysis membandingkan hasil Drive Test asli dengan hasil simulasi.
+      Halaman Evaluation menampilkan distribusi kualitas per segmen jarak (TA) beserta
+      grafik CDF untuk analisis coverage secara menyeluruh.
+    </p>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section">
+    <h3>
+      <span class="section-num">3</span>
+      Informasi Status &amp; Kendala
+    </h3>
+
+    <div class="info-box">
+      <p><strong>Status menunggu file site</strong>
+        Menandakan sistem belum menerima data XLSX. Klik tombol Upload dan pilih file yang sesuai.
+      </p>
+    </div>
+
+    <div class="info-box">
+      <p><strong>Route gagal dibuat</strong>
+        Pastikan koneksi internet aktif. Sistem menggunakan layanan routing OSRM secara online untuk membentuk rute.
+      </p>
+    </div>
+
+    <div class="info-box">
+      <p><strong>Site tidak ditemukan</strong>
+        Pastikan nama site yang dicari sesuai dengan data pada file XLSX yang diunggah.
+      </p>
+    </div>
+
+    <div class="info-box">
+      <p><strong>Data tidak valid saat upload CSV simulasi</strong>
+        Pastikan file memiliki kolom: <code>Lat</code>, <code>Lng</code>, <code>RSRP(dBm)</code>, <code>SINR(dB)</code>, dan <code>Distance(m)</code>.
+      </p>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section">
+    <h3>
+      <span class="section-num">4</span>
+      Tips Penggunaan
+    </h3>
+    <ul class="step-list">
+      <li>Gunakan data koordinat site yang valid dan akurat agar hasil simulasi lebih mendekati kondisi nyata.</li>
+      <li>Pastikan koneksi internet stabil saat generate rute agar proses routing berjalan lancar.</li>
+      <li>Gunakan level zoom peta ≥ 15 untuk visualisasi titik sampel yang optimal.</li>
+      <li>Export hasil simulasi sebagai CSV agar dapat digunakan di halaman Analysis dan Evaluation.</li>
+    </ul>
+  </div>
+
+  <footer class="help-footer">
+    Sistem Simulasi Drive Test 5G &copy; 2026
+  </footer>
+
+</main>
+
+{% endblock %}
