@@ -32,24 +32,26 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 # fallback untuk lokal (opsional tapi disarankan)
 if not DATABASE_URL:
-    DATABASE_URL = "postgresql://postgres:password@localhost:5432/DB_Pengguna"
+    DATABASE_URL = "postgresql://postgres:yCrNnvuYAFMqeRInzCoQcXdPWLIsjLqj@postgres.railway.internal:5432/railway"
 
-try:
-    db_pool = psycopg2.pool.SimpleConnectionPool(
-        minconn=1,
-        maxconn=10,
-        dsn=DATABASE_URL,
-        connect_timeout=5
-    )
-except Exception as e:
-    print("Error koneksi DB:", e)
-    db_pool = None
+db_pool = None
+
+def get_db_pool():
+    global db_pool
+    if db_pool is None:
+        db_pool = psycopg2.pool.SimpleConnectionPool(
+            minconn=1,
+            maxconn=10,
+            dsn=DATABASE_URL,
+            connect_timeout=5
+        )
+    return db_pool
 
 def get_db_connection():
-    return db_pool.getconn()
+    return get_db_pool().getconn()
 
 def release_db_connection(conn):
-    db_pool.putconn(conn)
+    get_db_pool().putconn(conn)
 
 # ================= VALIDASI =================
 ALLOWED_IMAGE_EXT = {'png', 'jpg', 'jpeg'}
@@ -78,6 +80,10 @@ def role_required(allowed_roles):
 @app.route('/')
 def test():
     return "WELCOME BERHASIL"
+
+@app.route('/health')
+def health():
+    return jsonify({'status': 'ok'}), 200
 
 # ================= LOGIN =================
 @app.route('/login', methods=['GET', 'POST'])
