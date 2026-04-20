@@ -10,6 +10,9 @@ import psycopg2
 from psycopg2 import pool
 from functools import wraps
 
+print(f"[STARTUP] PORT env = {os.getenv('PORT')}")
+print(f"[STARTUP] DATABASE_URL set = {bool(os.getenv('DATABASE_URL'))}")
+
 # ================= APP =================
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev")
@@ -32,7 +35,7 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 # fallback untuk lokal (opsional tapi disarankan)
 if not DATABASE_URL:
-    DATABASE_URL = "postgresql://postgres:yCrNnvuYAFMqeRInzCoQcXdPWLIsjLqj@postgres.railway.internal:5432/railway"
+    raise RuntimeError("DATABASE_URL environment variable is not set!")
 
 db_pool = None
 
@@ -78,8 +81,9 @@ def role_required(allowed_roles):
 
 # ================= AUTH =================
 @app.route('/')
-def test():
-    return "WELCOME BERHASIL"
+@app.route('/welcome')
+def welcome():
+    return render_template('welcome.html')
 
 @app.route('/health')
 def health():
