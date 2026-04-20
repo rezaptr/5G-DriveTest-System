@@ -76,9 +76,8 @@ def role_required(allowed_roles):
 
 # ================= AUTH =================
 @app.route('/')
-@app.route('/welcome')
-def welcome():
-    return render_template('welcome.html')
+def test():
+    return "WELCOME BERHASIL"
 
 # ================= LOGIN =================
 @app.route('/login', methods=['GET', 'POST'])
